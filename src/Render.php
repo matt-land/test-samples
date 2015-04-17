@@ -40,7 +40,10 @@ class Render {
     {
         $sortedBooks = $this->books;
         usort($sortedBooks, function($a, $b) {
-            return strcmp($a->author, $b->author);
+            $authorA = explode(" ", trim($a->author));
+            $authorB = explode(" ", trim($b->author));
+
+            return strcmp($authorA[count($authorA)-1], $authorB[count($authorB)-1]);
         });
         return $sortedBooks;
     }
@@ -51,7 +54,7 @@ class Render {
         //so lets copy it to prevent side effects
         $sortedBooks = $books;
         usort($sortedBooks, function($a, $b) {
-            return $a->price <= $b->price;
+            return $a->price >= $b->price;
         });
         return $sortedBooks;
     }
