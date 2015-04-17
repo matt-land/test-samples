@@ -9,7 +9,7 @@ use Samples\Service;
 
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public function testUpdateCustomer()
+    public function _testUpdateCustomer()
     {
         $service = new Service($email = 'apiuser', $pass = uniqid('password'));
 
