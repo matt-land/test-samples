@@ -14,13 +14,25 @@ class Render {
     public function __construct($jsonString = '[]')
     {
         $this->data = json_decode($jsonString);
-        $this->books = isset($this->books) ? $this->data->books : null ;
+        $this->books = isset($this->data->books) ? $this->data->books : null ;
     }
 
-    public function toHtml()
+    public function toHtml($sortMethod = 'title')
     {
         $html = '<h1>' . $this->data->category . '</h1>';
-        foreach ($this->sortBooksByAuthor() as $book) {
+        switch ($sortMethod) {
+            case 'author':
+                $sortedBooks = $this->sortBooksByAuthor(); break;
+            case 'isbn':
+                $sortedBooks = $this->sortBooksByIsbn($this->books); break;
+            case 'price':
+                $sortedBooks = $this->sortBooksByPrice($this->books); break;
+            case 'title':
+            default:
+                $sortedBooks = $this->books;
+        }
+
+        foreach ($sortedBooks as $book) {
             $html .=
             '<div id="' . $book->isbn . '" clas="book">' . PHP_EOL
                 . '<ul>' . PHP_EOL
@@ -32,6 +44,10 @@ class Render {
                 . '</ul>' . PHP_EOL
             . '</div>' . PHP_EOL;
         }
+        $html .='
+            <h3>Total Records: ' . $this->data->records . '</h3>
+            <a href="' . $this->data->meta->prev . '">Prev</a>
+            <a href="' . $this->data->meta->next . '">Next</a>';
 
         return $html;
     }
