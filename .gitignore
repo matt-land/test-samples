@@ -1,2 +1,4 @@
 vendor/
 junit.xml
+codeCoverage/
+composer.phar

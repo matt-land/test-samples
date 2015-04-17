@@ -1,4 +1,5 @@
 <?php namespace SamplesTest;
+use Samples\Render;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,9 +10,11 @@
 
 class RenderTest extends \PHPUnit_Framework_Testcase
 {
-    public function _testRenderer()
+    protected $jsonBody;
+
+    public function setUp()
     {
-        $books = [
+        $this->jsonBody = json_decode(json_encode([
             'category' => 'Young Adult',
             'books' => [
                 [
@@ -50,8 +53,13 @@ class RenderTest extends \PHPUnit_Framework_Testcase
                     'isbn' => '9781616203535'
                 ],
             ]
-        ];
-        $renderObj = new \Samples\Render(json_encode($books));
+        ]));
+    }
+
+    public function _testRenderer()
+    {
+
+        $renderObj = new \Samples\Render(json_encode($this->jsonBody));
         $rendering = $renderObj->toHtml();
         //$this->fail($rendering);
     }
@@ -61,44 +69,21 @@ class RenderTest extends \PHPUnit_Framework_Testcase
      */
     public function testSortBooksByAuthor()
     {
-        $books = [
-            [
-                'title' => 'Last Book' ,
-                'author' => 'Adam Zeta',
-                'publisher' => '',
-                'price' => '',
-                'isbn' => ''
-            ],
-            [
-                'title' => 'First Book' ,
-                'author' => 'Ken Amos',
-                'publisher' => '',
-                'price' => '',
-                'isbn' => ''
-            ],
-            [
-                'title' => 'Middle Book' ,
-                'author' => 'Sam Meta',
-                'publisher' => '',
-                'price' => '',
-                'isbn' => ''
-            ],
-        ];
         $realClass = new \Samples\Render(json_encode(['books'=>null]));
 
-        $reflectedClass = new \ReflectionClass(
-            $realClass
-        );
+        $reflectedClass = new \ReflectionClass($realClass);
 
         $booksProperty = $reflectedClass->getProperty('books');
         $booksProperty->setAccessible(1); //make it public
-         $booksProperty->setValue($realClass, json_decode(json_encode($books)));
+
+
+        $booksProperty->setValue($realClass, $this->jsonBody->books);
 
         $sortBooksByAuthorMethod = $reflectedClass->getMethod('sortBooksByAuthor');
         $sortBooksByAuthorMethod->setAccessible(true);
         $sortedBooks = $sortBooksByAuthorMethod->invoke($realClass);
-        $this->assertEquals('Ken Amos', $sortedBooks[0]->author);
-        $this->assertEquals('Adam Zeta', $sortedBooks[2]->author);
+        $this->assertEquals('Kwame Alexander', $sortedBooks[0]->author);
+        $this->assertEquals('William Ritter', $sortedBooks[4]->author);
     }
 
     /**
@@ -107,34 +92,21 @@ class RenderTest extends \PHPUnit_Framework_Testcase
      */
     public function testSortBooksByPrice()
     {
-        $books = [
-            [
-                'title' => 'Last Book' ,
-                'author' => 'Adam Zeta',
-                'publisher' => '',
-                'price' => '124.99',
-                'isbn' => ''
-            ],
-            [
-                'title' => 'First Book' ,
-                'author' => 'Ken Amos',
-                'publisher' => '',
-                'price' => '9.99',
-                'isbn' => ''
-            ],
-            [
-                'title' => 'Middle Book' ,
-                'author' => 'Sam Meta',
-                'publisher' => '',
-                'price' => '24.99',
-                'isbn' => ''
-            ],
-        ];
-        $realClass = new \Samples\Render(json_encode(['books'=>null]));
+        $realClass = new Render(json_encode(['books'=>null]));
         $sortBooksByPriceMethod = new \ReflectionMethod($realClass, 'sortBooksByPrice');
         $sortBooksByPriceMethod->setAccessible(true);
-        $sortedBooks = $sortBooksByPriceMethod->invoke($realClass, json_decode(json_encode($books)));
-        $this->assertEquals(9.99, $sortedBooks[0]->price);
-        $this->assertEquals(124.99, $sortedBooks[2]->price);
+
+        $sortedBooks = $sortBooksByPriceMethod->invoke($realClass, $this->jsonBody->books);
+
+        $this->assertEquals(12.95, $sortedBooks[0]->price);
+        $this->assertEquals(17.99, $sortedBooks[4]->price);
+    }
+
+    public function testSortBooksByISBN()
+    {
+        $sortedBooks = Render::sortBooksByIsbn($this->jsonBody->books);
+        $this->assertEquals('9780544107717', $sortedBooks[0]->isbn);
+        $this->assertEquals('9781616203535', $sortedBooks[4]->isbn);
+
     }
 }

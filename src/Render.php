@@ -54,7 +54,20 @@ class Render {
         //so lets copy it to prevent side effects
         $sortedBooks = $books;
         usort($sortedBooks, function($a, $b) {
+
             return $a->price >= $b->price;
+        });
+        return $sortedBooks;
+    }
+
+    public static function sortBooksByIsbn($books)
+    {
+        //usort is going to modify $books by reference,
+        //so lets copy it to prevent side effects
+        $sortedBooks = $books;
+        usort($sortedBooks, function($a, $b) {
+
+            return strcmp($a->isbn, $b->isbn);
         });
         return $sortedBooks;
     }
