@@ -11,10 +11,10 @@ class Render {
     private $data;
     private $books;
 
-    public function __construct($jsonString)
+    public function __construct($jsonString = '[]')
     {
         $this->data = json_decode($jsonString);
-        $this->books = $this->data->books;
+        $this->books = isset($this->books) ? $this->data->books : null ;
     }
 
     public function toHtml()

@@ -1,6 +1,7 @@
 <?php namespace SamplesTest;
 use Samples\Render;
-
+use ReflectionClass;
+use ReflectionMethod;
 /**
  * Created by IntelliJ IDEA.
  * User: mland
@@ -16,6 +17,11 @@ class RenderTest extends \PHPUnit_Framework_Testcase
     {
         $this->jsonBody = json_decode(json_encode([
             'category' => 'Young Adult',
+            'records' => 5,
+            'meta' => [
+                'next' => '/whatever?q=345w5',
+                'prev' => '/whatever?q=92342'
+            ],
             'books' => [
                 [
                     'title' => 'The Carnival at Bray' ,
@@ -58,10 +64,9 @@ class RenderTest extends \PHPUnit_Framework_Testcase
 
     public function _testRenderer()
     {
-
-        $renderObj = new \Samples\Render(json_encode($this->jsonBody));
+        $renderObj = new Render(json_encode($this->jsonBody));
         $rendering = $renderObj->toHtml();
-        //$this->fail($rendering);
+        $this->fail('This is complex: ' . PHP_EOL . $rendering);
     }
 
     /**
@@ -69,31 +74,30 @@ class RenderTest extends \PHPUnit_Framework_Testcase
      */
     public function testSortBooksByAuthor()
     {
-        $realClass = new \Samples\Render(json_encode(['books'=>null]));
+        $realClass = new Render();
 
-        $reflectedClass = new \ReflectionClass($realClass);
+        $reflectedClass = new ReflectionClass($realClass);
 
-        $booksProperty = $reflectedClass->getProperty('books');
-        $booksProperty->setAccessible(1); //make it public
+        $booksProperty = $reflectedClass->getProperty('books');                     // $realClass->books (private);
+        $booksProperty->setAccessible(1);                                           // $realClass->books (public);
+        $booksProperty->setValue($realClass, $this->jsonBody->books);               // $realClass->books = $this->jsonBody->books
 
-
-        $booksProperty->setValue($realClass, $this->jsonBody->books);
-
-        $sortBooksByAuthorMethod = $reflectedClass->getMethod('sortBooksByAuthor');
-        $sortBooksByAuthorMethod->setAccessible(true);
-        $sortedBooks = $sortBooksByAuthorMethod->invoke($realClass);
+        $sortBooksByAuthorMethod = $reflectedClass->getMethod('sortBooksByAuthor'); //$realClass->sortBooksByAuthor() (private)
+        $sortBooksByAuthorMethod->setAccessible(true);                              //$realClass->sortBooksByAuthor() (public)
+        $sortedBooks = $sortBooksByAuthorMethod->invoke($realClass);                //$realClass->sortBooksByAuthor() __call
         $this->assertEquals('Kwame Alexander', $sortedBooks[0]->author);
         $this->assertEquals('William Ritter', $sortedBooks[4]->author);
     }
 
     /**
-     * this time written statically/no OO
+     * this time written statically/no object oriented dependency
      * Much easier
      */
     public function testSortBooksByPrice()
     {
-        $realClass = new Render(json_encode(['books'=>null]));
-        $sortBooksByPriceMethod = new \ReflectionMethod($realClass, 'sortBooksByPrice');
+        $realClass = new Render();
+
+        $sortBooksByPriceMethod = new ReflectionMethod($realClass, 'sortBooksByPrice');
         $sortBooksByPriceMethod->setAccessible(true);
 
         $sortedBooks = $sortBooksByPriceMethod->invoke($realClass, $this->jsonBody->books);
@@ -102,11 +106,13 @@ class RenderTest extends \PHPUnit_Framework_Testcase
         $this->assertEquals(17.99, $sortedBooks[4]->price);
     }
 
+    /**
+     * the easiest yet. now that its static and public, we can just use it
+     */
     public function testSortBooksByISBN()
     {
         $sortedBooks = Render::sortBooksByIsbn($this->jsonBody->books);
         $this->assertEquals('9780544107717', $sortedBooks[0]->isbn);
         $this->assertEquals('9781616203535', $sortedBooks[4]->isbn);
-
     }
 }
