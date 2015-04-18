@@ -5,7 +5,8 @@
  * Date: 4/17/15
  * Time: 7:50 AM
  */
-
+use nsClient;
+use nsHost;
 class Service {
 
     const live = "https://webservices.netsuite.com";
@@ -21,7 +22,7 @@ class Service {
      */
     public function __construct($email, $pass)
     {
-        $this->_client = new \nsClient(\nsHost::live);
+        $this->_client = new nsClient(nsHost::live);
         $this->_client->setPassport(
             $email,
             $pass,

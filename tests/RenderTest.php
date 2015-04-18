@@ -2,6 +2,7 @@
 use Samples\Render;
 use ReflectionClass;
 use ReflectionMethod;
+use PHPUnit_Framework_TestCase;
 /**
  * Created by IntelliJ IDEA.
  * User: mland
@@ -9,7 +10,7 @@ use ReflectionMethod;
  * Time: 11:25 AM
  */
 
-class RenderTest extends \PHPUnit_Framework_Testcase
+class RenderTest extends PHPUnit_Framework_Testcase
 {
     protected $jsonBody;
 

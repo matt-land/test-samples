@@ -34,6 +34,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdateCustomer()
     {
+        return ;
         $service = new Service($sandboxKey = 1212312, $sandboxPassword = 55555);
 
         $id = $service->updateCustomer($this->customer);
