@@ -70,7 +70,7 @@ class RenderTest extends PHPUnit_Framework_Testcase
     {
         $renderObj = new Render(json_encode($this->jsonBody));
         $rendering = $renderObj->toHtml();
-        $this->fail('This is complex: ' . PHP_EOL . $rendering);
+        $this->fail('This is complex: ' . PHP_EOL . $rendering . " Lets test the methods instead.");
     }
 
     /**
@@ -78,9 +78,8 @@ class RenderTest extends PHPUnit_Framework_Testcase
      */
     public function testSortBooksByAuthor()
     {
-        $realClass = new Render();
-
-        $reflectedClass = new ReflectionClass($realClass);
+        $reflectedClass = new ReflectionClass('\\Samples\\Render');
+        $realClass = $reflectedClass->newInstance();
 
         $booksProperty = $reflectedClass->getProperty('books');                     // $realClass->books (private);
         $booksProperty->setAccessible(1);                                           // $realClass->books (public);
