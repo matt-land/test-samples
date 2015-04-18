@@ -13,6 +13,9 @@ class RenderTest extends \PHPUnit_Framework_Testcase
 {
     protected $jsonBody;
 
+    /**
+     * this is to simulate the json data we feed to the template
+     */
     public function setUp()
     {
         $this->jsonBody = json_decode(json_encode([
@@ -114,5 +117,15 @@ class RenderTest extends \PHPUnit_Framework_Testcase
         $sortedBooks = Render::sortBooksByIsbn($this->jsonBody->books);
         $this->assertEquals('9780544107717', $sortedBooks[0]->isbn);
         $this->assertEquals('9781616203535', $sortedBooks[4]->isbn);
+    }
+
+    /**
+     * just throw this one in too
+     */
+    public function testSortBooksByTitle()
+    {
+        $sortedBooks = Render::sortBooksByTitle($this->jsonBody->books);
+        $this->assertEquals('The Carnival at Bray', $sortedBooks[0]->title);
+        $this->assertEquals('Jackaby', $sortedBooks[4]->title);
     }
 }

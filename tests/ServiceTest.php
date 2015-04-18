@@ -1,4 +1,4 @@
-<?php
+<?php namespace SamplesTest;
 /**
  * Created by IntelliJ IDEA.
  * User: mland
@@ -9,12 +9,17 @@ use Samples\Service;
 
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
-    public function _testUpdateCustomer()
-    {
-        $service = new Service($email = 'apiuser', $pass = uniqid('password'));
+    private $customer;
 
+    public function setUp()
+    {
+        $this->customer = self::mockCustomer();
+    }
+
+    public static function mockCustomer()
+    {
         //build up a test object
-        $customer = new stdClass();
+        $customer = new \stdClass();
         $customer->name = uniqid('John Test');
         $customer->email = uniqid('test').'@test.com';
         $customer->address = rand(1,5000).' test street';
@@ -24,8 +29,17 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $customer->state = $states[array_rand($states)];
         $customer->zip = rand(10000,70000);
 
-        //$service->updateCustomer($customer);
+        return $customer;
+    }
 
-        //$service->getC
+    public function testUpdateCustomer()
+    {
+        $service = new Service($sandboxKey = 1212312, $sandboxPassword = 55555);
+
+        $id = $service->updateCustomer($this->customer);
+        $this->assertGreaterThan(0, $id);
+
+        $savedCustomer = json_decode($service->getCustomer($id));
+        $this->assertEquals($this->customer, $savedCustomer);
     }
 }

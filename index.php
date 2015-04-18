@@ -17,13 +17,6 @@ $dsnBooks = json_encode([
      ],
     'books' => [
         [
-            'title' => 'The Carnival at Bray' ,
-            'author' => 'Jessie Ann Foley',
-            'publisher' => 'Elephant Rock',
-            'price' => '12.95',
-            'isbn' => '97809895115597'
-        ],
-        [
             'title' => 'The Crossover' ,
             'author' => 'Kwame Alexander',
             'publisher' => 'Houghton',
@@ -31,11 +24,11 @@ $dsnBooks = json_encode([
             'isbn' => '9780544107717'
         ],
         [
-            'title' => 'The Gospel of Winter' ,
-            'author' => 'Brendan Kiely',
-            'publisher' => 'Simon & Schuster/Margaret K. McElderry',
-            'price' => '17.99',
-            'isbn' => '9781442484894'
+            'title' => 'The Carnival at Bray' ,
+            'author' => 'Jessie Ann Foley',
+            'publisher' => 'Elephant Rock',
+            'price' => '12.95',
+            'isbn' => '97809895115597'
         ],
         [
             'title' => 'I\'ll Give You the Sun' ,
@@ -51,8 +44,16 @@ $dsnBooks = json_encode([
             'price' => '16.95',
             'isbn' => '9781616203535'
         ],
+        [
+            'title' => 'The Gospel of Winter' ,
+            'author' => 'Brendan Kiely',
+            'publisher' => 'Simon & Schuster/Margaret K. McElderry',
+            'price' => '17.99',
+            'isbn' => '9781442484894'
+        ],
     ]
 ]);
 
 $render = new Render($dsnBooks);
-echo $render->toHtml();
+$sortOrder = isset($_REQUEST['sort']) ? $_REQUEST['sort'] : null;
+echo $render->toHtml($sortOrder);

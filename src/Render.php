@@ -29,7 +29,7 @@ class Render {
                 $sortedBooks = $this->sortBooksByPrice($this->books); break;
             case 'title':
             default:
-                $sortedBooks = $this->books;
+                $sortedBooks = $this->sortBooksByTitle($this->books); break;
         }
 
         foreach ($sortedBooks as $book) {
@@ -54,13 +54,20 @@ class Render {
 
     private function sortBooksByAuthor()
     {
+        //usort is going to modify $books by reference,
+        //so lets copy it to prevent side effects
         $sortedBooks = $this->books;
         usort($sortedBooks, function($a, $b) {
+            /**
+             * sort by author last name, so first get the last name
+             * or last segment of the name. Will not work with JR/III suffixes
+             */
             $authorA = explode(" ", trim($a->author));
             $authorB = explode(" ", trim($b->author));
 
             return strcmp($authorA[count($authorA)-1], $authorB[count($authorB)-1]);
         });
+
         return $sortedBooks;
     }
 
@@ -70,9 +77,12 @@ class Render {
         //so lets copy it to prevent side effects
         $sortedBooks = $books;
         usort($sortedBooks, function($a, $b) {
-
+            /**
+             * compare decimal price
+             */
             return $a->price >= $b->price;
         });
+
         return $sortedBooks;
     }
 
@@ -82,10 +92,30 @@ class Render {
         //so lets copy it to prevent side effects
         $sortedBooks = $books;
         usort($sortedBooks, function($a, $b) {
-
+            /**
+             * sort by ISBN string which might being with zero
+             */
             return strcmp($a->isbn, $b->isbn);
         });
+
         return $sortedBooks;
     }
 
+    public static function sortBooksByTitle($books)
+    {
+        //usort is going to modify $books by reference,
+        //so lets copy it to prevent side effects
+        $sortedBooks = $books;
+        usort($sortedBooks, function($a, $b) {
+            /**
+             * remove articles and sort titles
+             */
+            return strcmp(
+                str_ireplace(["a ", "an ", "the "], '', $a->title),
+                str_ireplace(["a ", "an ", "the "], '', $b->title)
+            );
+        });
+
+        return $sortedBooks;
+    }
 }
