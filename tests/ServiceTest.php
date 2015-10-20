@@ -6,7 +6,7 @@
  * Time: 8:26 AM
  */
 use Samples\Service;
-
+date_default_timezone_set('America/Chicago');
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
     private $customer;
