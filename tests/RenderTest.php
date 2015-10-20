@@ -13,7 +13,6 @@ date_default_timezone_set('America/Chicago');
 class RenderTest extends PHPUnit_Framework_Testcase
 {
     protected $jsonBody;
-
     /**
      * this is to simulate the json data we feed to the template
      */
@@ -86,5 +85,22 @@ class RenderTest extends PHPUnit_Framework_Testcase
         $sortedBooks = Render::sortBooksByTitle($this->jsonBody->books);
         $this->assertEquals('The Carnival at Bray', $sortedBooks[0]->title);
         $this->assertEquals('Jackaby', $sortedBooks[4]->title);
+    }
+
+    public function _testRenderHtml()
+    {
+        $reflectedClass = new ReflectionClass('\\Samples\\Render');
+        $realClass = $reflectedClass->newInstance(json_encode($this->jsonBody));
+        $realClass->toHtml();
+        $realClass->toHtml($method = 'author');
+        $realClass->toHtml($method = 'isbn');
+        $realClass->toHtml($method = 'price');
+        /**
+         * Gets me code coverage
+         * No actual assertions !!!
+         *   :(
+         */
+
+
     }
 }

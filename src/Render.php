@@ -118,7 +118,7 @@ class Render {
                 $sortedBooks = $this->sortBooksByPrice($this->books); break;
             case 'title':
             default:
-                $sortedBooks = $this->sortBooksByTitle($this->books); break;
+                $sortedBooks = $this->sortBooksByTitle($this->books);
         }
 
         foreach ($sortedBooks as $book) {
