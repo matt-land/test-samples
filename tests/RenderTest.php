@@ -19,14 +19,17 @@ class RenderTest extends PHPUnit_Framework_Testcase
      */
     public function setUp()
     {
-        $this->jsonBody = json_decode(file_get_contents(__DIR__ . '/pageDataForView.json'));
+        $this->jsonBody = json_decode(
+            file_get_contents(__DIR__ . '/pageDataForView.json')
+        );
     }
 
     public function _testRenderer()
     {
         $renderObj = new Render(json_encode($this->jsonBody));
         $rendering = $renderObj->toHtml();
-        $this->fail('This is complex: ' . PHP_EOL . $rendering . " Lets test the methods instead.");
+        $this->fail('This is complex: ' . PHP_EOL
+            . $rendering . " Lets test the methods instead.");
     }
 
     /**
@@ -37,13 +40,13 @@ class RenderTest extends PHPUnit_Framework_Testcase
         $reflectedClass = new ReflectionClass('\\Samples\\Render');
         $realClass = $reflectedClass->newInstance();
 
-        $booksProperty = $reflectedClass->getProperty('books');                     // $realClass->books (private);
-        $booksProperty->setAccessible(1);                                           // $realClass->books (public);
-        $booksProperty->setValue($realClass, $this->jsonBody->books);               // $realClass->books = $this->jsonBody->books
+        $booksProperty = $reflectedClass->getProperty('books');
+        $booksProperty->setAccessible(1);
+        $booksProperty->setValue($realClass, $this->jsonBody->books);
 
-        $sortBooksByAuthorMethod = $reflectedClass->getMethod('sortBooksByAuthor'); //$realClass->sortBooksByAuthor() (private)
-        $sortBooksByAuthorMethod->setAccessible(true);                              //$realClass->sortBooksByAuthor() (public)
-        $sortedBooks = $sortBooksByAuthorMethod->invoke($realClass);                //$realClass->sortBooksByAuthor() __call
+        $sortByAuthorMethod = $reflectedClass->getMethod('sortBooksByAuthor');
+        $sortByAuthorMethod->setAccessible(true);
+        $sortedBooks = $sortByAuthorMethod->invoke($realClass);
         $this->assertEquals('Kwame Alexander', $sortedBooks[0]->author);
         $this->assertEquals('William Ritter', $sortedBooks[4]->author);
     }
@@ -56,10 +59,10 @@ class RenderTest extends PHPUnit_Framework_Testcase
     {
         $realClass = new Render();
 
-        $sortBooksByPriceMethod = new ReflectionMethod($realClass, 'sortBooksByPrice');
-        $sortBooksByPriceMethod->setAccessible(true);
+        $sortByPriceMethod = new ReflectionMethod($realClass, 'sortBooksByPrice');
+        $sortByPriceMethod->setAccessible(true);
 
-        $sortedBooks = $sortBooksByPriceMethod->invoke($realClass, $this->jsonBody->books);
+        $sortedBooks = $sortByPriceMethod->invoke($realClass, $this->jsonBody->books);
 
         $this->assertEquals(12.95, $sortedBooks[0]->price);
         $this->assertEquals(17.99, $sortedBooks[4]->price);
