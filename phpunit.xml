@@ -10,14 +10,12 @@
     <logging>
         <log type="junit" target="junit.xml"/>
         <!-- <log type="json" target="testlog.json"/> -->
-        <log type="coverage-html" target="codeCoverage" charset="UTF-8"
-             yui="true" highlight="true"
-             lowUpperBound="50" highLowerBound="80"/>
+        <log type="coverage-html"
+             target="codeCoverage"
+             charset="UTF-8"
+             yui="true"
+             highlight="true"
+             lowUpperBound="50"
+             highLowerBound="80"/>
     </logging>
-    <filter>
-        <blacklist>
-            <directory >./vendor</directory>
-            <directory >./tests</directory>
-        </blacklist>
-    </filter>
 </phpunit>
